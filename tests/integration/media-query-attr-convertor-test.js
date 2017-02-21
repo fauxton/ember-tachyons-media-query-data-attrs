@@ -66,3 +66,14 @@ test('handles component with classes across multiple lines', function (assert) {
 
   assert.equal(this.$('a').attr('class'), 'foo bar baz abc-ns ember-view', 'Adds classes to built-in components with classes');
 });
+
+test('handles yield in template', function (assert) {
+  this.render(hbs`
+    <div class="pt4 avenir">
+      <form class="mw7 center pa4 br2-ns ba b--black-20">
+        {{yield}}
+      </form>
+    </div>
+  `);
+  assert.equal(this.$('div').attr('class'), 'pt4 avenir', 'Does not crash on templates containing `yields`');
+});

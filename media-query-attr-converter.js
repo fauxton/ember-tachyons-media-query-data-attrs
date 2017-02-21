@@ -10,6 +10,7 @@ module.exports = class {
 
     walker.visit(ast, (node) => {
       if (node.type === 'MustacheStatement') {
+        if (node.path.original === 'yield') { return node; }
         let classes = [];
         let classKVPair;
         let presentClassKVPair = node.hash.pairs.find(kv => kv.key === 'class')
