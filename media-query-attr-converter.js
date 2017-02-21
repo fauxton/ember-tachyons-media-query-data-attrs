@@ -33,8 +33,7 @@ module.exports = class {
           return true;
         });
 
-        // classKVPair.value.original = classes.join(' ').trim();
-        classKVPair.value.value = classes.join(' ').trim();
+        classKVPair.value.value = this.sanitize(classes);
 
       } else if (node.type === 'ElementNode') {
         let classAttr;
@@ -65,11 +64,17 @@ module.exports = class {
           return true;
         });
 
-        classAttr.value.chars = classes.join(' ').trim();
+        console.log('classes should now be', classes.join(' ').trim());
+
+        classAttr.value.chars = this.sanitize(classes);
       }
     });
 
     return ast;
+  }
+
+  sanitize(coll) {
+    return coll.join(' ').replace(/(\r\n|\n|\r)/gm,'').replace(/\s\s+/g, ' ').trim();
   }
 
   mockLocation() {
@@ -98,8 +103,12 @@ module.exports = class {
       loc: this.mockLocation(),
       type: 'HashPair',
       key: 'class',
-      value: '',
-      original: '',
+      value: {
+        loc: this.mockLocation(),
+        type: 'StringLiteral',
+        value: '',
+        original: '',
+      },
     };
   }
 

@@ -32,3 +32,37 @@ test('sets expected classes on components as well', function (assert) {
 
   assert.equal(this.$('div').attr('class'), 'baz foo-l bar-l ember-view', 'Adds classes to component element');
 });
+
+test('sets expected classes on components without regular classes', function (assert) {
+  this.render(hbs`
+    {{with-data-attrs data-mq-l="foo bar"}}
+  `);
+
+  assert.equal(this.$('div').attr('class'), 'foo-l bar-l ember-view', 'Adds classes to component element w/o classes');
+});
+
+test('preserves component classes when no data-attrs present', function (assert) {
+  this.render(hbs`
+    {{with-data-attrs class="foo bar"}}
+  `);
+
+  assert.equal(this.$('div').attr('class'), 'foo bar ember-view', 'Adds classes to component element w/o classes');
+});
+
+test('works with addon components like `link-to`', function (assert) {
+  this.render(hbs`
+    {{link-to 'index' '' class="foo bar
+    baz" data-mq-ns="abc"}}
+  `);
+
+  assert.equal(this.$('a').attr('class'), 'foo bar baz abc-ns ember-view', 'Adds classes to built-in components with classes');
+});
+
+test('handles component with classes across multiple lines', function (assert) {
+  this.render(hbs`
+    {{link-to 'index' '' class="foo bar
+    baz" data-mq-ns="abc"}}
+  `);
+
+  assert.equal(this.$('a').attr('class'), 'foo bar baz abc-ns ember-view', 'Adds classes to built-in components with classes');
+});
