@@ -24,3 +24,11 @@ test('ignores elements without data-attrs or classes', function (assert) {
 
   assert.notOk(this.$('article').attr('class'), 'Does not add blank class attribute');
 });
+
+test('sets expected classes on components as well', function (assert) {
+  this.render(hbs`
+    {{with-data-attrs class="baz" data-mq-l="foo bar"}}
+  `);
+
+  assert.equal(this.$('div').attr('class'), 'baz foo-l bar-l ember-view', 'Adds classes to component element');
+});

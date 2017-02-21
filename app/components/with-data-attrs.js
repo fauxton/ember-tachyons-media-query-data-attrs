@@ -1,0 +1,1 @@
+export { default } from 'tachyons-media-query-helpers/components/with-data-attrs';
