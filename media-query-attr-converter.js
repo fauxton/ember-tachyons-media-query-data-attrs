@@ -10,70 +10,82 @@ module.exports = class {
 
     walker.visit(ast, (node) => {
       if (node.type === 'MustacheStatement' || node.type === 'BlockStatement') {
-        if (node.path.original !== 'yield') {
-          if (node.hash.pairs.length) {
-            let classes = [];
-            let classKVPair;
-            let presentClassKVPair = node.hash.pairs.find(kv => kv.key === 'class')
-
-            if (presentClassKVPair) {
-              classKVPair = presentClassKVPair;
-              const originalClasses = classKVPair.value.value.split(' ');
-              classes.push(...originalClasses);
-            } else {
-              const mockClassKVPair = this.mockClassKVPair();
-              node.hash.pairs.push(mockClassKVPair);
-              classKVPair = mockClassKVPair;
-            }
-
-            node.hash.pairs = node.hash.pairs.filter((kv) => {
-              if (kv.key.startsWith(this.dataAttrPrefix)) {
-                const suffixedClasses = this.generateComponentClasses(kv);
-                classes.push(...suffixedClasses);
-                return false;
-              }
-              return true;
-            });
-
-            classKVPair.value.value = this.sanitize(classes);
-          } else {
-            console.log('hash', node.hash);
-          }
-        }
+        this.handleHandlebarsNode(node);
       } else if (node.type === 'ElementNode') {
-        let classAttr;
-
-        const presentClassAttr = node.attributes.find(attr => attr.name === 'class');
-
-        if (presentClassAttr) {
-          classAttr = presentClassAttr;
-        } else {
-          const mockClassAttr = this.mockClassAttr();
-          node.attributes.push(mockClassAttr);
-          classAttr = mockClassAttr;
-        }
-
-        let classes;
-        if (classAttr.value.chars) {
-          classes = classAttr.value.chars.split(' ');
-        } else {
-          classes = [];
-        }
-
-        node.attributes = node.attributes.filter((attr) => {
-          if(attr.name.startsWith(this.dataAttrPrefix)) {
-            const suffixedClasses = this.generateElementClasses(attr);
-            classes.push(...suffixedClasses);
-            return false;
-          }
-          return true;
-        });
-
-        classAttr.value.chars = this.sanitize(classes);
+        this.handleHTMLNode(node);
       }
     });
 
     return ast;
+  }
+
+  handleHTMLNode(node) {
+    let classAttr;
+
+    const presentClassAttr = node.attributes.find(attr => attr.name === 'class');
+
+    if (presentClassAttr) {
+      classAttr = presentClassAttr;
+    } else {
+      const mockClassAttr = this.mockClassAttr();
+      node.attributes.push(mockClassAttr);
+      classAttr = mockClassAttr;
+    }
+
+    let classes;
+    if (classAttr.value.chars) {
+      classes = classAttr.value.chars.split(' ');
+    } else {
+      classes = [];
+    }
+
+    node.attributes = node.attributes.filter((attr) => {
+      if(attr.name.startsWith(this.dataAttrPrefix)) {
+        const suffixedClasses = this.generateElementClasses(attr);
+        classes.push(...suffixedClasses);
+        return false;
+      }
+      return true;
+    });
+
+    classAttr.value.chars = this.sanitize(classes);
+  }
+
+  handleHandlebarsNode(node) {
+    if (this.isNotYield(node) && this.isNotHandlebarsVariable(node)) {
+      let classes = [];
+      let classKVPair;
+      let presentClassKVPair = node.hash.pairs.find(kv => kv.key === 'class')
+
+      if (presentClassKVPair) {
+        classKVPair = presentClassKVPair;
+        const originalClasses = classKVPair.value.value.split(' ');
+        classes.push(...originalClasses);
+      } else {
+        const mockClassKVPair = this.mockClassKVPair();
+        node.hash.pairs.push(mockClassKVPair);
+        classKVPair = mockClassKVPair;
+      }
+
+      node.hash.pairs = node.hash.pairs.filter((kv) => {
+        if (kv.key.startsWith(this.dataAttrPrefix)) {
+          const suffixedClasses = this.generateComponentClasses(kv);
+          classes.push(...suffixedClasses);
+          return false;
+        }
+        return true;
+      });
+
+      classKVPair.value.value = this.sanitize(classes);
+    }
+  }
+
+  isNotYield(node) {
+    return node.path.original !== 'yield';
+  }
+
+  isNotHandlebarsVariable(node) {
+    return node.hash.pairs.length;
   }
 
   sanitize(coll) {
