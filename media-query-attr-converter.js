@@ -9,33 +9,37 @@ module.exports = class {
     var walker = new this.syntax.Walker();
 
     walker.visit(ast, (node) => {
-      if (node.type === 'MustacheStatement') {
-        if (node.path.original === 'yield') { return node; }
-        let classes = [];
-        let classKVPair;
-        let presentClassKVPair = node.hash.pairs.find(kv => kv.key === 'class')
+      if (node.type === 'MustacheStatement' || node.type === 'BlockStatement') {
+        if (node.path.original !== 'yield') {
+          if (node.hash.pairs.length) {
+            let classes = [];
+            let classKVPair;
+            let presentClassKVPair = node.hash.pairs.find(kv => kv.key === 'class')
 
-        if (presentClassKVPair) {
-          classKVPair = presentClassKVPair;
-          const originalClasses = classKVPair.value.value.split(' ');
-          classes.push(...originalClasses);
-        } else {
-          const mockClassKVPair = this.mockClassKVPair();
-          node.hash.pairs.push(mockClassKVPair);
-          classKVPair = mockClassKVPair;
-        }
+            if (presentClassKVPair) {
+              classKVPair = presentClassKVPair;
+              const originalClasses = classKVPair.value.value.split(' ');
+              classes.push(...originalClasses);
+            } else {
+              const mockClassKVPair = this.mockClassKVPair();
+              node.hash.pairs.push(mockClassKVPair);
+              classKVPair = mockClassKVPair;
+            }
 
-        node.hash.pairs = node.hash.pairs.filter((kv) => {
-          if (kv.key.startsWith(this.dataAttrPrefix)) {
-            const suffixedClasses = this.generateComponentClasses(kv);
-            classes.push(...suffixedClasses);
-            return false;
+            node.hash.pairs = node.hash.pairs.filter((kv) => {
+              if (kv.key.startsWith(this.dataAttrPrefix)) {
+                const suffixedClasses = this.generateComponentClasses(kv);
+                classes.push(...suffixedClasses);
+                return false;
+              }
+              return true;
+            });
+
+            classKVPair.value.value = this.sanitize(classes);
+          } else {
+            console.log('hash', node.hash);
           }
-          return true;
-        });
-
-        classKVPair.value.value = this.sanitize(classes);
-
+        }
       } else if (node.type === 'ElementNode') {
         let classAttr;
 
@@ -64,8 +68,6 @@ module.exports = class {
           }
           return true;
         });
-
-        console.log('classes should now be', classes.join(' ').trim());
 
         classAttr.value.chars = this.sanitize(classes);
       }
@@ -129,3 +131,4 @@ module.exports = class {
     return klasses.map(klass => klass + suffix);
   }
 }
+

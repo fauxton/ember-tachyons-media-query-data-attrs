@@ -58,6 +58,17 @@ test('works with addon components like `link-to`', function (assert) {
   assert.equal(this.$('a').attr('class'), 'foo bar baz abc-ns ember-view', 'Adds classes to built-in components with classes');
 });
 
+test('works with addon components nested within normal html elements', function (assert) {
+  this.render(hbs`
+    <div class="outer-div">
+      {{link-to 'index' '' class="foo bar baz" data-mq-ns="abc"}}
+    </div>
+  `);
+
+  assert.equal(this.$('div').attr('class'), 'outer-div', 'Preserves outer classes of wrapping html elements');
+  assert.equal(this.$('a').attr('class'), 'foo bar baz abc-ns ember-view', 'Adds classes to nested built-in components with classes');
+});
+
 test('handles component with classes across multiple lines', function (assert) {
   this.render(hbs`
     {{link-to 'index' '' class="foo bar
@@ -76,4 +87,21 @@ test('handles yield in template', function (assert) {
     </div>
   `);
   assert.equal(this.$('div').attr('class'), 'pt4 avenir', 'Does not crash on templates containing `yields`');
+});
+
+test('handles block components', function (assert) {
+  this.render(hbs`
+    {{#with-data-attrs class="foo bar" data-mq-l="fw4"}}
+      <div class="nested"></div>
+    {{/with-data-attrs}}
+  `);
+  assert.equal(this.$('div').attr('class'), 'foo bar fw4-l ember-view', 'Does not crash on templates containing `yields`');
+});
+
+test('correctly handles variables', function (assert) {
+  this.render(hbs`
+    {{foo}}
+  `);
+
+  assert.notOk(this.$('div').attr('class'), 'class attr is not set on variable invocation');
 });
