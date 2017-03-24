@@ -1,1 +1,1 @@
-export { default } from 'tachyons-media-query-helpers/components/with-data-attrs';
+export { default } from 'ember-tachyons-media-query-data-attrs/components/with-data-attrs';

@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = {
-  name: 'tachyons-media-query-helpers',
+  name: 'ember-tachyons-media-query-data-attrs',
 
   setupPreprocessorRegistry: function(type, registry) {
     var MediaQueryAttrConverter = require('./media-query-attr-converter');

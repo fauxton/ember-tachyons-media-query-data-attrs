@@ -1,4 +1,4 @@
-# tachyons-media-query-helpers
+# ember-tachyons-media-query-data-attrs
 
 I like [tachyons](https://tachyons.io), but I sometimes find it hard to wrap my brain
 around what a given element will look like at different screen sizes when all
@@ -33,7 +33,7 @@ are also supported.
 ## Installation
 
 * `git clone <repository-url>` this repository
-* `cd tachyons-media-query-helpers`
+* `cd ember-tachyons-media-query-data-attrs`
 * `npm install`
 * `bower install`
 

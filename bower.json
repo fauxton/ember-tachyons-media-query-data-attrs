@@ -1,5 +1,5 @@
 {
-  "name": "tachyons-media-query-helpers",
+  "name": "ember-tachyons-media-query-data-attrs",
   "dependencies": {
     "ember": "~2.10.0",
     "ember-cli-shims": "0.1.3"
