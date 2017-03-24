@@ -6,12 +6,14 @@
     "ember-addon"
   ],
   "license": "MIT",
-  "author": "",
+  "author": "Curtis Ekstrom",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
-  "repository": "https://github.com/fauxton/ember-tachyons-media-query-data-attrs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fauxton/ember-tachyons-media-query-data-attrs.git"
+  },
   "scripts": {
     "build": "ember build",
     "start": "ember server",
@@ -48,5 +50,10 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/fauxton/ember-tachyons-media-query-data-attrs/issues"
+  },
+  "homepage": "https://github.com/fauxton/ember-tachyons-media-query-data-attrs#readme",
+  "main": "index.js"
 }
