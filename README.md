@@ -1,3 +1,6 @@
+[![Build
+Status](https://travis-ci.org/fauxton/ember-tachyons-media-query-data-attrs.svg?branch=master)](https://travis-ci.org/fauxton/ember-tachyons-media-query-data-attrs)
+
 # ember-tachyons-media-query-data-attrs
 
 I like [tachyons](https://tachyons.io), but I sometimes find it hard to wrap my brain
